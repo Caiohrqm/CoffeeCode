@@ -1,27 +1,27 @@
 # CoffeeCode
 
-Bem-vindo à documentação da API do CoffeeCode, um sistema de cardápio para uma cafeteria. Este sistema foi criado para ajudar a gerenciar o cardápio e os pedidos de uma cafeteria de forma eficiente e simplificada. Com o CoffeeCode, os clientes podem visualizar facilmente os itens disponíveis no cardápio e fazer pedidos de acordo com suas preferências. Além disso, os funcionários podem gerenciar os pedidos, atualizar o cardápio sempre que necessário. Nesta documentação, você encontrará informações detalhadas sobre as rotas disponíveis, os parâmetros necessários e as respostas retornadas pela API.
+    Bem-vindo à documentação da API do CoffeeCode, um sistema de cardápio para uma cafeteria. Este sistema foi criado para ajudar a gerenciar o cardápio e os pedidos de uma cafeteria de forma eficiente e simplificada. Com o CoffeeCode, os clientes podem visualizar facilmente os itens disponíveis no cardápio e fazer pedidos de acordo com suas preferências. Além disso, os funcionários podem gerenciar os pedidos, atualizar o cardápio sempre que necessário. Nesta documentação, você encontrará informações detalhadas sobre as rotas disponíveis, os parâmetros necessários e as respostas retornadas pela API.
 
 ## Contribuidores
 
--  [Caio Henrique Martins](https://github.com/Caiohrqm)
+- [Caio Henrique Martins](https://github.com/Caiohrqm)
 
 - [Gabriella Vieira](https://github.com/vieiragab)
 
 ## Endpoints
 
-- Menu (Cardápio)
-    - [Adicionar Item](#adicionar-item)
-    - [Atualizar Item](#atualizar-item)
-    - [Apagar Item](#apagar-item)
-    - [Listar Itens](#listar-itens)
-    - [Mostrar Item](#mostrar-item)
+- Itens (Menu)
+    - [Adicionar](#adicionar-item)
+    - [Atualizar](#atualizar-item)
+    - [Apagar](#apagar-item)
+    - [Mostrar](#mostrar-item)
+    - [Listar Menu](#listar-itens)
 - Pedidos
-    - [Registrar](#registrar-pedido)
+    - [Adicionar](#adicionar-pedido)
     - [Atualizar](#atualizar-pedido)
     - [Apagar](#apagar-pedido)
-    - [Listar Todos](#listar-pedidos)
     - [Mostrar](#mostrar-pedido)
+    - [Listar Todos](#listar-pedidos)
 
 ---
 
@@ -113,7 +113,7 @@ Código| Descrição
 -|-
 200| atualizado com sucesso
 401| sem permissão
-404| id informado não existe
+404| id informado não encontrado
 
 ---
 
@@ -131,51 +131,7 @@ Código| Descrição
 -|-
 200| excluído com sucesso
 401| sem permissão
-404| id informado não existe
-
----
-
-### Listar Itens
-
-`GET` /menu
-
-**Exemplo de resposta**
-
-```json
-[
-    {
-        "id": 1,
-        "categoria": "Bebidas",
-        "nome": "Expresso",
-        "descricao": "Café preto",
-        "preco": 3.50,
-        "ativo": true
-    },
-    {
-        "id": 2,
-        "categoria": "Bebidas",
-        "nome": "Cappuccino",
-        "descricao": "Café com leite e chantilly",
-        "preco": 5.50,
-        "ativo": true
-    },
-    {
-        "id": 3,
-        "categoria": "Salgados",
-        "nome": "Coxinha",
-        "descricao": "Recheada com frango e catupiry",
-        "preco": 6.50,
-        "ativo": true
-    }
-]
-```
-
-**Códigos de resposta**
-
-Código| Descrição
--|-
-200| retornado com sucesso
-404| página não encontrada
+404| id informado não encontrado
 
 ---
 
@@ -205,11 +161,55 @@ id - código do item a ser consultado
 Código| Descrição
 -|-
 200| retornado com sucesso
-404| id informado não existe
+404| id informado não encontrado
 
 ---
 
-### Registrar Pedido
+### Listar Itens
+
+`GET` /menu
+
+**Exemplo de resposta**
+
+```json
+[
+    {
+        "id": 1,
+        "categoria": "Bebidas",
+        "nome": "Expresso",
+        "descricao": "Café preto",
+        "preco": 3.50,
+        "ativo": true
+    },
+    {
+        "id": 2,
+        "categoria": "Bebidas",
+        "nome": "Cappuccino",
+        "descricao": "Café com leite e chantilly",
+        "preco": 5.00,
+        "ativo": true
+    },
+    {
+        "id": 3,
+        "categoria": "Salgados",
+        "nome": "Coxinha",
+        "descricao": "Recheada com frango e catupiry",
+        "preco": 6.50,
+        "ativo": true
+    }
+]
+```
+
+**Códigos de resposta**
+
+Código| Descrição
+-|-
+200| retornado com sucesso
+404| página não encontrada
+
+---
+
+### Adicionar Pedido
 
 `POST` /pedido
 
@@ -242,7 +242,7 @@ entregue| booleano| sim| pedido já foi entregue; **padrão:** *false*
     ],
     "total": 10.00,
     "data": "2023-03-07 09:52:33",
-    "senha": 001,
+    "senha": 1,
     "nome": "João",
     "entregue": false
 }
@@ -267,7 +267,7 @@ entregue| booleano| sim| pedido já foi entregue; **padrão:** *false*
     ],
     "total": 10.00,
     "data": "2023-03-07 09:52:33",
-    "senha": 001,
+    "senha": 1,
     "nome": "João",
     "entregue": false
 }
@@ -308,7 +308,7 @@ id - código do pedido a ser atualizado
     ],
     "total": 10.00,
     "data": "2023-03-07 09:52:33",
-    "senha": 001,
+    "senha": 1,
     "nome": "João",
     "entregue": true
 }
@@ -333,7 +333,7 @@ id - código do pedido a ser atualizado
     ],
     "total": 10.00,
     "data": "2023-03-07 09:52:33",
-    "senha": 001,
+    "senha": 1,
     "nome": "João",
     "entregue": true
 }
@@ -345,7 +345,7 @@ Código| Descrição
 -|-
 200| atualizado com sucesso
 401| sem permissão
-404| id informado não existe
+404| id informado não encontrado
 
 ---
 
@@ -363,7 +363,44 @@ Código| Descrição
 -|-
 200| excluído com sucesso
 401| sem permissão
-404| id informado não existe
+404| id informado não encontrado
+
+---
+
+### Mostrar Pedido
+
+`GET` /pedido/{id}
+
+**Parâmetros de caminho**
+
+id - código do pedido a ser consultado
+
+**Exemplo de resposta**
+
+```json
+{
+    "id": 2,
+    "itens": [
+        {
+            "id": 3,
+            "preco": 6.50,
+            "quantidade": 2
+        }
+    ],
+    "total": 13.00,
+    "data": "2023-03-07 10:08:46",
+    "senha": 2,
+    "nome": "Maria",
+    "entregue": false
+}
+```
+
+**Códigos de resposta**
+
+Código| Descrição
+-|-
+200| retornado com sucesso
+404| id informado não encontrado
 
 ---
 
@@ -391,7 +428,7 @@ Código| Descrição
         ],
         "total": 10.00,
         "data": "2023-03-07 09:52:33",
-        "senha": 001,
+        "senha": 1,
         "nome": "João",
         "entregue": true
     },
@@ -406,7 +443,7 @@ Código| Descrição
         ],
         "total": 13.00,
         "data": "2023-03-07 10:08:46",
-        "senha": 002,
+        "senha": 2,
         "nome": "Maria",
         "entregue": false
     }
@@ -419,40 +456,3 @@ Código| Descrição
 -|-
 200| retornado com sucesso
 404| página não encontrada
-
----
-
-### Mostrar Pedido
-
-`GET` /pedido/{id}
-
-**Parâmetros de caminho**
-
-id - código do pedido a ser consultado
-
-**Exemplo de resposta**
-
-```json
-{
-    "id": 2,
-    "itens": [
-        {
-            "id": 3,
-            "preco": 6.50,
-            "quantidade": 2
-        }
-    ],
-    "total": 13.00,
-    "data": "2023-03-07 10:08:46",
-    "senha": 002,
-    "nome": "Maria",
-    "entregue": false
-}
-```
-
-**Códigos de resposta**
-
-Código| Descrição
--|-
-200| retornado com sucesso
-404| id informado não existe
