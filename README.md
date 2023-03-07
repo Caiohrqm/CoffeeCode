@@ -1,6 +1,6 @@
 # CoffeeCode
 
-    Bem-vindo à documentação da API do CoffeeCode, um sistema de cardápio para uma cafeteria. Este sistema foi criado para ajudar a gerenciar o cardápio e os pedidos de uma cafeteria de forma eficiente e simplificada. Com o CoffeeCode, os clientes podem visualizar facilmente os itens disponíveis no cardápio e fazer pedidos de acordo com suas preferências. Além disso, os funcionários podem gerenciar os pedidos, atualizar o cardápio sempre que necessário. Nesta documentação, você encontrará informações detalhadas sobre as rotas disponíveis, os parâmetros necessários e as respostas retornadas pela API.
+Bem-vindo à documentação da API do CoffeeCode, um sistema de cardápio para uma cafeteria. Este sistema foi criado para ajudar a gerenciar o cardápio e os pedidos de uma cafeteria de forma eficiente e simplificada. Com o CoffeeCode, os clientes podem visualizar facilmente os itens disponíveis no cardápio e fazer pedidos de acordo com suas preferências. Além disso, os funcionários podem gerenciar os pedidos, atualizar o cardápio sempre que necessário. Nesta documentação, você encontrará informações detalhadas sobre as rotas disponíveis, os parâmetros necessários e as respostas retornadas pela API.
 
 ## Contribuidores
 
@@ -15,7 +15,7 @@
     - [Atualizar](#atualizar-item)
     - [Apagar](#apagar-item)
     - [Mostrar](#mostrar-item)
-    - [Listar Menu](#listar-itens)
+    - [Listar Todos](#listar-itens)
 - Pedidos
     - [Adicionar](#adicionar-pedido)
     - [Atualizar](#atualizar-pedido)
