@@ -4,22 +4,22 @@ Uma API para um menu de uma cafeteria.
 
 ## Endpoints
 
-- Cardápio
-    - [Cadastrar item](#cadastrar-item)
-    - [Atualizar item](#atualizar-item)
-    - [Apagar item](#apagar-item)
-    - [Listar tudo](#listar-tudo-mostrar-cardápio)
+- Itens
+    - [Cadastrar](#cadastrar-item)
+    - [Atualizar](#atualizar-item)
+    - [Apagar](#apagar-item)
+    - [Listar](#listar-itens)
 - Categorias
     - [Cadastrar](#cadastrar-categoria)
     - [Atualizar](#atualizar-categoria)
     - [Apagar](#apagar-categoria)
-    - [Listar todas](#listar-todas)
+    - [Listar](#listar-categorias)
 - Pedidos
-    - Cadastrar
-    - Atualizar
-    - Apagar
-    - Listar todas
-    - Mostrar detalhes
+    - [Registrar](#registrar-pedido)
+    - [Atualizar](#atualizar-pedido)
+    - [Apagar](#apagar-pedido)
+    - [Listar](#listar-pedidos)
+    - [Detalhar](#detalhar-pedido)
 
 ---
 
@@ -63,7 +63,7 @@ Código| Descrição
 
 ### Atualizar Item
 
-`PUT` /item/{item_id}
+`PUT` /item/{id}
 
 **Campos da requisição**
 
@@ -99,7 +99,7 @@ Código| Descrição
 
 ### Apagar Item
 
-`DELETE` /item/{item_id}
+`DELETE` /item/{id}
 
 **Códigos de resposta**
 
@@ -111,9 +111,9 @@ Código| Descrição
 
 ---
 
-### Listar tudo (Mostrar Cardápio)
+### Listar Itens
 
-`GET` /menu
+`GET` /item
 
 **Campos da resposta**
 
@@ -124,7 +124,7 @@ categoria_id| inteiro| não| código de uma categoria previamente cadastrada
 nome| texto| não| nome do item
 descricao| texto| não| descrição detalhada do item
 preco| decimal| não| preço de venda do item
-ativo| booleano| não| se o item está ou não à venda no momento
+ativo| booleano| não| se o item está à venda no momento, se padrão é true
 
 **Exemplo de corpo de resposta**
 
@@ -160,7 +160,7 @@ ativo| booleano| não| se o item está ou não à venda no momento
             "categoria_id": 2,
             "nome": "Coxinha",
             "descricao": "Recheada com frango e catupiry",
-            "preco": 5.6,
+            "preco": 5.8,
             "ativo": true
         }
     ]
@@ -173,8 +173,6 @@ Código| Descrição
 -|-
 200| retornado com sucesso
 404| página não encontrada
-
----
 
 ---
 
@@ -210,7 +208,7 @@ Código| Descrição
 
 ### Atualizar Categoria
 
-`PUT` /categoria/{categoria_id}
+`PUT` /categoria/{id}
 
 **Campos da requisição**
 
@@ -240,7 +238,7 @@ Código| Descrição
 
 ### Apagar Categoria
 
-`DELETE` /categoria/{categoria_id}
+`DELETE` /categoria/{id}
 
 **Códigos de resposta**
 
@@ -260,18 +258,14 @@ Código| Descrição
 
 Campo| Tipo| Obrigatório| Descrição
 -|-|:-:|-
-id| inteiro| sim| código do item
-categoria_id| inteiro| não| código de uma categoria previamente cadastrada
-nome| texto| não| nome do item
-descricao| texto| não| descrição detalhada do item
-preco| decimal| não| preço de venda do item
-ativo| booleano| não| se o item está ou não à venda no momento
+id| inteiro| sim| código da categoria
+nome| texto| sim| nome da categoria
 
 **Exemplo de corpo de resposta**
 
 ```json
 {
-    "itens": [
+    "categorais": [
         {
             "id": 1,
             "nome": "Bebidas"
@@ -296,3 +290,209 @@ Código| Descrição
 404| página não encontrada
 
 ---
+
+### Registrar Pedido
+
+`POST` /pedido
+
+**Campos da requisição**
+
+Campo| Tipo| Obrigatório| Descrição
+-|-|:-:|-
+id| inteiro| sim| código interno do pedido
+itens| lista[objeto]| sim| objeto contendo o id, preço e quantidade de cada item
+total| decimal| sim| valor total do pedido
+data| data| sim| data e hora que o pedido foi registrado
+senha| inteiro| sim| código externo do pedido, zera no começo de cada dia
+nome| texto| não| nome do cliente
+entregue| booleano| sim| se o pedido já foi entregue, seu padrão é falso
+
+**Exemplo de corpo de requisição**
+
+```json
+{
+    "id": 1,
+    "itens": [
+        {
+            "id": 1,
+            "preco": 4.2,
+            "quantidade": 1
+        },
+        {
+            "id": 6,
+            "preco": 5.8,
+            "quantidade": 1
+        }
+    ],
+    "total": 10.2,
+    "data": "2023-03-06 16:28:53",
+    "senha": "001",
+    "nome": "João",
+    "entregue": false
+}
+```
+
+**Códigos de resposta**
+
+Código| Descrição
+-|-
+201| cadastrado com sucesso
+400| os campos enviados são inválidos
+
+---
+
+### Atualizar Pedido
+
+`PUT` /pedido/{id}
+
+**Campos da requisição**
+
+Campo| Tipo| Obrigatório| Descrição
+-|-|:-:|-
+id| inteiro| sim| código interno do pedido
+entregue| booleano| sim| se o pedido já foi entregue
+
+**Exemplo de corpo de requisição**
+
+```json
+{
+    "id": 1,
+    "entregue": true
+}
+```
+
+**Códigos de resposta**
+
+Código| Descrição
+-|-
+200| atualizado com sucesso
+401| sem permissão
+404| id informado não existe
+
+---
+
+### Apagar Pedido
+
+`DELETE` /pedido/{id}
+
+**Códigos de resposta**
+
+Código| Descrição
+-|-
+200| excluído com sucesso
+401| sem permissão
+404| id informado não existe
+
+---
+
+### Listar Pedidos
+
+`GET` /pedidos
+
+**Campos da resposta**
+
+Campo| Tipo| Obrigatório| Descrição
+-|-|:-:|-
+id| inteiro| sim| código interno do pedido
+itens| lista[objeto]| sim| objeto contendo o id, preço e quantidade de cada item
+total| decimal| sim| valor total do pedido
+data| data| sim| data e hora que o pedido foi registrado
+senha| inteiro| sim| código externo do pedido, zera no começo de cada dia
+nome| texto| não| nome do cliente
+
+**Exemplo de corpo de requisição**
+
+```json
+{
+    "pedidos": [
+        {
+            "id": 1,
+            "itens": [
+                {
+                    "id": 1,
+                    "preco": 4.2,
+                    "quantidade": 1
+                },
+                {
+                    "id": 6,
+                    "preco": 5.8,
+                    "quantidade": 1
+                }
+            ],
+            "total": 10,
+            "senha": "001",
+            "nome": "João"
+        },
+        {
+            "id": 2,
+            "itens": [
+                {
+                    "id": 3,
+                    "preco": 5.6,
+                    "quantidade": 1
+                }
+            ],
+            "total": 5.6,
+            "senha": "002",
+            "nome": "Maria"
+        }
+    ]
+}
+```
+
+**Códigos de resposta**
+
+Código| Descrição
+-|-
+200| retornado com sucesso
+404| página não encontrada
+
+---
+
+### Detalhar Pedido
+
+`GET` /pedido/{id}
+
+**Campos da resposta**
+
+Campo| Tipo| Obrigatório| Descrição
+-|-|:-:|-
+id| inteiro| sim| código interno do pedido
+itens| lista[objeto]| sim| objeto contendo o id, preço e quantidade de cada item
+total| decimal| sim| valor total do pedido
+data| data| sim| data e hora que o pedido foi registrado
+senha| inteiro| sim| código externo do pedido, zera no começo de cada dia
+nome| texto| não| nome do cliente
+entregue| booleano| sim| se o pedido já foi entregue, seu padrão é falso
+
+**Exemplo de corpo de requisição**
+
+```json
+{
+    "id": 1,
+    "itens": [
+        {
+            "id": 1,
+            "preco": 4.2,
+            "quantidade": 1
+        },
+        {
+            "id": 6,
+            "preco": 5.8,
+            "quantidade": 1
+        }
+    ],
+    "total": 10,
+    "data": "2023-03-06 16:28:53",
+    "senha": "001",
+    "nome": "João",
+    "entregue": true
+}
+```
+
+**Códigos de resposta**
+
+Código| Descrição
+-|-
+200| retornado com sucesso
+404| página não encontrada
