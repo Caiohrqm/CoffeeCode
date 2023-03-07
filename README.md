@@ -1,52 +1,65 @@
 # CoffeeCode
 
-Uma API para um menu de uma cafeteria.
+Bem-vindo à documentação da API do CoffeeCode, um sistema de cardápio para uma cafeteria. Este sistema foi criado para ajudar a gerenciar o cardápio e os pedidos de uma cafeteria de forma eficiente e simplificada. Com o CoffeeCode, os clientes podem visualizar facilmente os itens disponíveis no cardápio e fazer pedidos de acordo com suas preferências. Além disso, os funcionários podem gerenciar os pedidos, atualizar o cardápio sempre que necessário. Nesta documentação, você encontrará informações detalhadas sobre as rotas disponíveis, os parâmetros necessários e as respostas retornadas pela API.
+
+## Contribuidores
+
+-  [Caio Henrique Martins](https://github.com/Caiohrqm)
+
+- [Gabriella Vieira](https://github.com/vieiragab)
 
 ## Endpoints
 
-- Itens
-    - [Cadastrar](#cadastrar-item)
-    - [Atualizar](#atualizar-item)
-    - [Apagar](#apagar-item)
-    - [Listar](#listar-itens)
-- Categorias
-    - [Cadastrar](#cadastrar-categoria)
-    - [Atualizar](#atualizar-categoria)
-    - [Apagar](#apagar-categoria)
-    - [Listar](#listar-categorias)
+- Menu (Cardápio)
+    - [Adicionar Item](#adicionar-item)
+    - [Atualizar Item](#atualizar-item)
+    - [Apagar Item](#apagar-item)
+    - [Listar Itens](#listar-itens)
+    - [Mostrar Item](#mostrar-item)
 - Pedidos
     - [Registrar](#registrar-pedido)
     - [Atualizar](#atualizar-pedido)
     - [Apagar](#apagar-pedido)
-    - [Listar](#listar-pedidos)
-    - [Detalhar](#detalhar-pedido)
+    - [Listar Todos](#listar-pedidos)
+    - [Mostrar](#mostrar-pedido)
 
 ---
 
-### Cadastrar Item
+### Adicionar Item
 
-`POST` /item
+`POST` /menu
 
 **Campos da requisição**
 
 Campo| Tipo| Obrigatório| Descrição
 -|-|:-:|-
-id| inteiro| sim| código do item
-categoria_id| inteiro| sim| código de uma categoria previamente cadastrada
+categoria| texto| sim| categoria do item
 nome| texto| sim| nome do item
-descricao| texto| não| descrição detalhada do item
+descricao| texto| não| breve descrição do item
 preco| decimal| sim| preço de venda do item
-ativo| booleano| sim| se o item está ou não à venda no momento
+ativo| booleano| sim| está à venda no momento; **padrão:** *true*
 
-**Exemplo de corpo de requisição**
+**Corpo de requisição**
+
+```json
+{
+    "categoria": "Bebidas",
+    "nome": "Expresso",
+    "descricao": "Café preto",
+    "preco": 3.50,
+    "ativo": true
+}
+```
+
+**Exemplo de resposta**
 
 ```json
 {
     "id": 1,
-    "categoria_id": 1,
+    "categoria": "Bebidas",
     "nome": "Expresso",
     "descricao": "Café preto",
-    "preco": 4,
+    "preco": 3.50,
     "ativo": true
 }
 ```
@@ -61,28 +74,35 @@ Código| Descrição
 
 ---
 
-### Atualizar Item
+### Atualizar item
 
-`PUT` /item/{id}
+`PUT` /menu/{id}
 
-**Campos da requisição**
+**Parâmetros de caminho**
 
-Campo| Tipo| Obrigatório| Descrição
--|-|:-:|-
-categoria_id| inteiro| não| código de uma categoria previamente cadastrada
-nome| texto| não| nome do item
-descricao| texto| não| descrição detalhada do item
-preco| decimal| não| preço de venda do item
-ativo| booleano| não| se o item está ou não à venda no momento
+id - código do item a ser atualizado
 
-**Exemplo de corpo de requisição**
+**Corpo de requisição**
 
 ```json
 {
-    "categoria_id": 1,
-    "nome": "Expresso",
-    "descricao": "Café preto",
-    "preco": 4.2,
+    "categoria": "Bebidas",
+    "nome": "Cappuccino",
+    "descricao": "Café com leite e chantilly",
+    "preco": 5.00,
+    "ativo": true
+}
+```
+
+**Exemplo de resposta**
+
+```json
+{
+    "id": 2,
+    "categoria": "Bebidas",
+    "nome": "Cappuccino",
+    "descricao": "Café com leite e chantilly",
+    "preco": 5.00,
     "ativo": true
 }
 ```
@@ -97,9 +117,13 @@ Código| Descrição
 
 ---
 
-### Apagar Item
+### Apagar item
 
-`DELETE` /item/{id}
+`DELETE` /menu/{id}
+
+**Parâmetros de caminho**
+
+id - código do item a ser apagado
 
 **Códigos de resposta**
 
@@ -113,58 +137,37 @@ Código| Descrição
 
 ### Listar Itens
 
-`GET` /item
+`GET` /menu
 
-**Campos da resposta**
-
-Campo| Tipo| Obrigatório| Descrição
--|-|:-:|-
-id| inteiro| sim| código do item
-categoria_id| inteiro| não| código de uma categoria previamente cadastrada
-nome| texto| não| nome do item
-descricao| texto| não| descrição detalhada do item
-preco| decimal| não| preço de venda do item
-ativo| booleano| não| se o item está à venda no momento, se padrão é true
-
-**Exemplo de corpo de resposta**
+**Exemplo de resposta**
 
 ```json
-{
-    "menu": [
-        {
-            "id": 1,
-            "categoria_id": 1,
-            "nome": "Expresso",
-            "descricao": "Café preto",
-            "preco": 4.2,
-            "ativo": true
-        },
-        {
-            "id": 2,
-            "categoria_id": 1,
-            "nome": "Cappuccino",
-            "descricao": "Café com leite e chantilly",
-            "preco": 4.8,
-            "ativo": true
-        },
-        {
-            "id": 3,
-            "categoria_id": 1,
-            "nome": "Mocha",
-            "descricao": "Café com chocolate, leite e chantilly",
-            "preco": 5.6,
-            "ativo": true
-        },
-        {
-            "id": 6,
-            "categoria_id": 2,
-            "nome": "Coxinha",
-            "descricao": "Recheada com frango e catupiry",
-            "preco": 5.8,
-            "ativo": true
-        }
-    ]
-}
+[
+    {
+        "id": 1,
+        "categoria": "Bebidas",
+        "nome": "Expresso",
+        "descricao": "Café preto",
+        "preco": 3.50,
+        "ativo": true
+    },
+    {
+        "id": 2,
+        "categoria": "Bebidas",
+        "nome": "Cappuccino",
+        "descricao": "Café com leite e chantilly",
+        "preco": 5.50,
+        "ativo": true
+    },
+    {
+        "id": 3,
+        "categoria": "Salgados",
+        "nome": "Coxinha",
+        "descricao": "Recheada com frango e catupiry",
+        "preco": 6.50,
+        "ativo": true
+    }
+]
 ```
 
 **Códigos de resposta**
@@ -176,109 +179,24 @@ Código| Descrição
 
 ---
 
-### Cadastrar Categoria
+### Mostrar Item
 
-`POST` /categoria
+`GET` /menu/{id}
 
-**Campos da requisição**
+**Parâmetros de caminho**
 
-Campo| Tipo| Obrigatório| Descrição
--|-|:-:|-
-id| inteiro| sim| código da categoria
-nome| texto| sim| nome da categoria
+id - código do item a ser consultado
 
-**Exemplo de corpo de requisição**
+**Exemplo de resposta**
 
 ```json
 {
     "id": 1,
-    "nome": "Bebidas"
-}
-```
-
-**Códigos de resposta**
-
-Código| Descrição
--|-
-201| cadastrado com sucesso
-401| sem permissão
-400| os campos enviados são inválidos
-
----
-
-### Atualizar Categoria
-
-`PUT` /categoria/{id}
-
-**Campos da requisição**
-
-Campo| Tipo| Obrigatório| Descrição
--|-|:-:|-
-id| inteiro| sim| código da categoria
-nome| texto| sim| nome da categoria
-
-**Exemplo de corpo de requisição**
-
-```json
-{
-    "id": 2,
-    "nome": "Salgados"
-}
-```
-
-**Códigos de resposta**
-
-Código| Descrição
--|-
-200| atualizado com sucesso
-401| sem permissão
-404| id informado não existe
-
----
-
-### Apagar Categoria
-
-`DELETE` /categoria/{id}
-
-**Códigos de resposta**
-
-Código| Descrição
--|-
-200| excluído com sucesso
-401| sem permissão
-404| id informado não existe
-
----
-
-### Listar Categorias
-
-`GET` /categorias
-
-**Campos da resposta**
-
-Campo| Tipo| Obrigatório| Descrição
--|-|:-:|-
-id| inteiro| sim| código da categoria
-nome| texto| sim| nome da categoria
-
-**Exemplo de corpo de resposta**
-
-```json
-{
-    "categorais": [
-        {
-            "id": 1,
-            "nome": "Bebidas"
-        },
-        {
-            "id": 2,
-            "nome": "Salgados"
-        },
-        {
-            "id": 3,
-            "nome": "Doces"
-        }
-    ]
+    "categoria": "Bebidas",
+    "nome": "Expresso",
+    "descricao": "Café preto",
+    "preco": 3.50,
+    "ativo": true
 }
 ```
 
@@ -287,7 +205,7 @@ nome| texto| sim| nome da categoria
 Código| Descrição
 -|-
 200| retornado com sucesso
-404| página não encontrada
+404| id informado não existe
 
 ---
 
@@ -299,15 +217,38 @@ Código| Descrição
 
 Campo| Tipo| Obrigatório| Descrição
 -|-|:-:|-
-id| inteiro| sim| código interno do pedido
 itens| lista[objeto]| sim| objeto contendo o id, preço e quantidade de cada item
 total| decimal| sim| valor total do pedido
 data| data| sim| data e hora que o pedido foi registrado
-senha| inteiro| sim| código externo do pedido, zera no começo de cada dia
+senha| inteiro| sim| código de espera do pedido; contagem zera no começo de cada dia
 nome| texto| não| nome do cliente
-entregue| booleano| sim| se o pedido já foi entregue, seu padrão é falso
+entregue| booleano| sim| pedido já foi entregue; **padrão:** *false*
 
-**Exemplo de corpo de requisição**
+**Corpo de requisição**
+
+```json
+{
+    "itens": [
+        {
+            "id": 1,
+            "preco": 3.50,
+            "quantidade": 1
+        },
+        {
+            "id": 3,
+            "preco": 6.50,
+            "quantidade": 1
+        }
+    ],
+    "total": 10.00,
+    "data": "2023-03-07 09:52:33",
+    "senha": 001,
+    "nome": "João",
+    "entregue": false
+}
+```
+
+**Exemplo de resposta**
 
 ```json
 {
@@ -315,18 +256,18 @@ entregue| booleano| sim| se o pedido já foi entregue, seu padrão é falso
     "itens": [
         {
             "id": 1,
-            "preco": 4.2,
+            "preco": 3.50,
             "quantidade": 1
         },
         {
-            "id": 6,
-            "preco": 5.8,
+            "id": 3,
+            "preco": 6.50,
             "quantidade": 1
         }
     ],
-    "total": 10.2,
-    "data": "2023-03-06 16:28:53",
-    "senha": "001",
+    "total": 10.00,
+    "data": "2023-03-07 09:52:33",
+    "senha": 001,
     "nome": "João",
     "entregue": false
 }
@@ -345,18 +286,55 @@ Código| Descrição
 
 `PUT` /pedido/{id}
 
-**Campos da requisição**
+**Parâmetros de caminho**
 
-Campo| Tipo| Obrigatório| Descrição
--|-|:-:|-
-id| inteiro| sim| código interno do pedido
-entregue| booleano| sim| se o pedido já foi entregue
+id - código do pedido a ser atualizado
 
-**Exemplo de corpo de requisição**
+**Corpo de requisição**
+
+```json
+{
+    "itens": [
+        {
+            "id": 1,
+            "preco": 3.50,
+            "quantidade": 1
+        },
+        {
+            "id": 3,
+            "preco": 6.50,
+            "quantidade": 1
+        }
+    ],
+    "total": 10.00,
+    "data": "2023-03-07 09:52:33",
+    "senha": 001,
+    "nome": "João",
+    "entregue": true
+}
+```
+
+**Exemplo de resposta**
 
 ```json
 {
     "id": 1,
+    "itens": [
+        {
+            "id": 1,
+            "preco": 3.50,
+            "quantidade": 1
+        },
+        {
+            "id": 3,
+            "preco": 6.50,
+            "quantidade": 1
+        }
+    ],
+    "total": 10.00,
+    "data": "2023-03-07 09:52:33",
+    "senha": 001,
+    "nome": "João",
     "entregue": true
 }
 ```
@@ -375,6 +353,10 @@ Código| Descrição
 
 `DELETE` /pedido/{id}
 
+**Parâmetros de caminho**
+
+id - código do pedido a ser excluído
+
 **Códigos de resposta**
 
 Código| Descrição
@@ -389,55 +371,46 @@ Código| Descrição
 
 `GET` /pedidos
 
-**Campos da resposta**
-
-Campo| Tipo| Obrigatório| Descrição
--|-|:-:|-
-id| inteiro| sim| código interno do pedido
-itens| lista[objeto]| sim| objeto contendo o id, preço e quantidade de cada item
-total| decimal| sim| valor total do pedido
-data| data| sim| data e hora que o pedido foi registrado
-senha| inteiro| sim| código externo do pedido, zera no começo de cada dia
-nome| texto| não| nome do cliente
-
-**Exemplo de corpo de requisição**
+**Exemplo de resposta**
 
 ```json
-{
-    "pedidos": [
-        {
-            "id": 1,
-            "itens": [
-                {
-                    "id": 1,
-                    "preco": 4.2,
-                    "quantidade": 1
-                },
-                {
-                    "id": 6,
-                    "preco": 5.8,
-                    "quantidade": 1
-                }
-            ],
-            "total": 10,
-            "senha": "001",
-            "nome": "João"
-        },
-        {
-            "id": 2,
-            "itens": [
-                {
-                    "id": 3,
-                    "preco": 5.6,
-                    "quantidade": 1
-                }
-            ],
-            "total": 5.6,
-            "senha": "002",
-            "nome": "Maria"
-        }
-    ]
-}
+[
+    {
+        "id": 1,
+        "itens": [
+            {
+                "id": 1,
+                "preco": 3.50,
+                "quantidade": 1
+            },
+            {
+                "id": 3,
+                "preco": 6.50,
+                "quantidade": 1
+            }
+        ],
+        "total": 10.00,
+        "data": "2023-03-07 09:52:33",
+        "senha": 001,
+        "nome": "João",
+        "entregue": true
+    },
+    {
+        "id": 2,
+        "itens": [
+            {
+                "id": 3,
+                "preco": 6.50,
+                "quantidade": 2
+            }
+        ],
+        "total": 13.00,
+        "data": "2023-03-07 10:08:46",
+        "senha": 002,
+        "nome": "Maria",
+        "entregue": false
+    }
+]
 ```
 
 **Códigos de resposta**
@@ -449,44 +422,31 @@ Código| Descrição
 
 ---
 
-### Detalhar Pedido
+### Mostrar Pedido
 
 `GET` /pedido/{id}
 
-**Campos da resposta**
+**Parâmetros de caminho**
 
-Campo| Tipo| Obrigatório| Descrição
--|-|:-:|-
-id| inteiro| sim| código interno do pedido
-itens| lista[objeto]| sim| objeto contendo o id, preço e quantidade de cada item
-total| decimal| sim| valor total do pedido
-data| data| sim| data e hora que o pedido foi registrado
-senha| inteiro| sim| código externo do pedido, zera no começo de cada dia
-nome| texto| não| nome do cliente
-entregue| booleano| sim| se o pedido já foi entregue, seu padrão é falso
+id - código do pedido a ser consultado
 
-**Exemplo de corpo de requisição**
+**Exemplo de resposta**
 
 ```json
 {
-    "id": 1,
+    "id": 2,
     "itens": [
         {
-            "id": 1,
-            "preco": 4.2,
-            "quantidade": 1
-        },
-        {
-            "id": 6,
-            "preco": 5.8,
-            "quantidade": 1
+            "id": 3,
+            "preco": 6.50,
+            "quantidade": 2
         }
     ],
-    "total": 10,
-    "data": "2023-03-06 16:28:53",
-    "senha": "001",
-    "nome": "João",
-    "entregue": true
+    "total": 13.00,
+    "data": "2023-03-07 10:08:46",
+    "senha": 002,
+    "nome": "Maria",
+    "entregue": false
 }
 ```
 
@@ -495,4 +455,4 @@ entregue| booleano| sim| se o pedido já foi entregue, seu padrão é falso
 Código| Descrição
 -|-
 200| retornado com sucesso
-404| página não encontrada
+404| id informado não existe
