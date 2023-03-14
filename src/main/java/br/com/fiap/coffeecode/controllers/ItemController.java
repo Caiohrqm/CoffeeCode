@@ -13,7 +13,7 @@ public class ItemController {
     
     @GetMapping("/menu")
     public Item show(){
-        return new Item("Bebidas","Expresso","Café preto",new BigDecimal(3.5),true);
+        return new Item(1,"Bebidas","Expresso","Café preto",new BigDecimal(3.5),true);
 
     }
     
