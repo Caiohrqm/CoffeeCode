@@ -1,22 +1,79 @@
 package br.com.fiap.coffeecode.controllers;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.fiap.coffeecode.models.Item;
 import br.com.fiap.coffeecode.models.Pedido;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class PedidoController {
     
-    @GetMapping("/pedido")
-    public Pedido show(){
-        return new Pedido(2, new ArrayList<>(Arrays.asList(new Item(3, new BigDecimal(6.5), 2))) , new BigDecimal(13), LocalDateTime.of(2023, Month.MARCH, 07, 10, 8, 46), 2, "Maria", false);
+    Logger log = LoggerFactory.getLogger(Pedido.class);
+    List<Pedido> pedidos = new ArrayList<>();
+
+    @GetMapping("/menu")
+    public List<Pedido> index(){
+        return pedidos;
     }
+    
+    @PostMapping("/menu")
+    public ResponseEntity<Pedido> create(@RequestBody Pedido pedido){
+        log.info("cadastrando pedido " + pedido);
+        pedido.setId(pedidos.size() + 1l);
+        pedidos.add(pedido);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
+    }
+
+    @GetMapping("/menu/{id}")
+    public ResponseEntity<Pedido> show(@PathVariable Long id){
+        log.info("detalhando pedido " + id);
+        var itemEncontrado = pedidos.stream().filter(i -> i.getId().equals(id)).findFirst();
+        
+        if (itemEncontrado.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        
+        return ResponseEntity.ok(itemEncontrado.get());
+    }
+    
+    @DeleteMapping("/menu/{id}")
+    public ResponseEntity<Pedido> destroy(@PathVariable Long id){
+        log.info("deletando pedido " + id);
+        var itemEncontrado = pedidos.stream().filter(i -> i.getId().equals(id)).findFirst();
+        
+        if (itemEncontrado.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        
+        pedidos.remove(itemEncontrado.get());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+    
+    @PutMapping("/menu/{id}")
+    public ResponseEntity<Pedido> update(@PathVariable Long id, @RequestBody Pedido pedido){
+        log.info("atualizando pedido " + id);
+        var itemEncontrado = pedidos.stream().filter(i -> i.getId().equals(id)).findFirst();
+        
+        if (itemEncontrado.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        
+        pedidos.remove(itemEncontrado.get());
+        pedido.setId(id);
+        pedidos.add(pedido);
+
+        return ResponseEntity.ok(pedido);
+    }
+
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Pedido {
-    private int id;
+    private Long id;
     private ArrayList<Item> itens;
     private BigDecimal total;
     private LocalDateTime data;
@@ -13,7 +13,7 @@ public class Pedido {
     private String nome;
     private boolean entregue = false;
     
-    public Pedido(int id, ArrayList<Item> itens, BigDecimal total, LocalDateTime data, int senha, String nome,
+    public Pedido(Long id, ArrayList<Item> itens, BigDecimal total, LocalDateTime data, int senha, String nome,
             boolean entregue) {
         this.id = id;
         this.itens = itens;
@@ -24,11 +24,11 @@ public class Pedido {
         this.entregue = entregue;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

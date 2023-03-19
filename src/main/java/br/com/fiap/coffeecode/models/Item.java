@@ -3,7 +3,7 @@ package br.com.fiap.coffeecode.models;
 import java.math.BigDecimal;
 
 public class Item {
-    private int id;
+    private Long id;
     private String categoria;
     private String nome;
     private String descricao;
@@ -11,7 +11,7 @@ public class Item {
     private boolean ativo = true;
     private int quantidade;
 
-    public Item(int id, String categoria, String nome, String descricao, BigDecimal preco, boolean ativo) {
+    public Item(Long id, String categoria, String nome, String descricao, BigDecimal preco, boolean ativo) {
         this.id = id;
         this.categoria = categoria;
         this.nome = nome;
@@ -20,17 +20,17 @@ public class Item {
         this.ativo = ativo;
     }
 
-    public Item(int id, BigDecimal preco, int quantidade) {
+    public Item(Long id, BigDecimal preco, int quantidade) {
         this.id = id;
         this.preco = preco;
         this.quantidade = quantidade;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
