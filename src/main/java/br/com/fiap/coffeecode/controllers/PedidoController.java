@@ -24,12 +24,12 @@ public class PedidoController {
     Logger log = LoggerFactory.getLogger(Pedido.class);
     List<Pedido> pedidos = new ArrayList<>();
 
-    @GetMapping("/menu")
+    @GetMapping("/pedido")
     public List<Pedido> index(){
         return pedidos;
     }
     
-    @PostMapping("/menu")
+    @PostMapping("/pedido")
     public ResponseEntity<Pedido> create(@RequestBody Pedido pedido){
         log.info("cadastrando pedido " + pedido);
         pedido.setId(pedidos.size() + 1l);
@@ -37,7 +37,7 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
     }
 
-    @GetMapping("/menu/{id}")
+    @GetMapping("/pedido/{id}")
     public ResponseEntity<Pedido> show(@PathVariable Long id){
         log.info("detalhando pedido " + id);
         var itemEncontrado = pedidos.stream().filter(i -> i.getId().equals(id)).findFirst();
@@ -48,7 +48,7 @@ public class PedidoController {
         return ResponseEntity.ok(itemEncontrado.get());
     }
     
-    @DeleteMapping("/menu/{id}")
+    @DeleteMapping("/pedido/{id}")
     public ResponseEntity<Pedido> destroy(@PathVariable Long id){
         log.info("deletando pedido " + id);
         var itemEncontrado = pedidos.stream().filter(i -> i.getId().equals(id)).findFirst();
@@ -61,7 +61,7 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     
-    @PutMapping("/menu/{id}")
+    @PutMapping("/pedido/{id}")
     public ResponseEntity<Pedido> update(@PathVariable Long id, @RequestBody Pedido pedido){
         log.info("atualizando pedido " + id);
         var itemEncontrado = pedidos.stream().filter(i -> i.getId().equals(id)).findFirst();
