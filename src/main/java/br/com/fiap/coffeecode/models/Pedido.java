@@ -4,9 +4,16 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Pedido {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private ArrayList<Item> itens;
+    // private ArrayList<Item> itens;
     private BigDecimal total;
     private LocalDateTime data;
     private int senha;
@@ -16,7 +23,7 @@ public class Pedido {
     public Pedido(Long id, ArrayList<Item> itens, BigDecimal total, LocalDateTime data, int senha, String nome,
             boolean entregue) {
         this.id = id;
-        this.itens = itens;
+        // this.itens = itens;
         this.total = total;
         this.data = data;
         this.senha = senha;
@@ -32,13 +39,13 @@ public class Pedido {
         this.id = id;
     }
 
-    public ArrayList<Item> getItens() {
-        return itens;
-    }
+    // public ArrayList<Item> getItens() {
+    //     return itens;
+    // }
 
-    public void setItens(ArrayList<Item> itens) {
-        this.itens = itens;
-    }
+    // public void setItens(ArrayList<Item> itens) {
+    //     this.itens = itens;
+    // }
 
     public BigDecimal getTotal() {
         return total;
@@ -82,7 +89,7 @@ public class Pedido {
 
     @Override
     public String toString() {
-        return "Pedido [id=" + id + ", itens=" + itens + ", total=" + total + ", data=" + data + ", senha=" + senha
+        return "Pedido [id=" + id +/* ", itens=" + itens + */ ", total=" + total + ", data=" + data + ", senha=" + senha
                 + ", nome=" + nome + ", entregue=" + entregue + "]";
     }
 

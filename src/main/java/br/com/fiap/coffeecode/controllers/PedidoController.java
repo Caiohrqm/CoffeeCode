@@ -3,12 +3,13 @@ package br.com.fiap.coffeecode.controllers;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.coffeecode.models.Pedido;
+import br.com.fiap.coffeecode.repository.PedidoRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,61 +18,63 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
+@RequestMapping("/pedido")
 public class PedidoController {
     
     Logger log = LoggerFactory.getLogger(Pedido.class);
-    List<Pedido> pedidos = new ArrayList<>();
 
-    @GetMapping("/pedido")
+    @Autowired
+    PedidoRepository repository;
+
+    @GetMapping
     public List<Pedido> index(){
-        return pedidos;
+        return repository.findAll();
     }
     
-    @PostMapping("/pedido")
+    @PostMapping
     public ResponseEntity<Pedido> create(@RequestBody Pedido pedido){
         log.info("cadastrando pedido " + pedido);
-        pedido.setId(pedidos.size() + 1l);
-        pedidos.add(pedido);
+        repository.save(pedido);
         return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
     }
 
-    @GetMapping("/pedido/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Pedido> show(@PathVariable Long id){
         log.info("detalhando pedido " + id);
-        var itemEncontrado = pedidos.stream().filter(i -> i.getId().equals(id)).findFirst();
+        var pedidoEncontrado = repository.findById(id);
         
-        if (itemEncontrado.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (pedidoEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
         
-        return ResponseEntity.ok(itemEncontrado.get());
+        return ResponseEntity.ok(pedidoEncontrado.get());
     }
     
-    @DeleteMapping("/pedido/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Pedido> destroy(@PathVariable Long id){
         log.info("deletando pedido " + id);
-        var itemEncontrado = pedidos.stream().filter(i -> i.getId().equals(id)).findFirst();
+        var pedidoEncontrado = repository.findById(id);
         
-        if (itemEncontrado.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (pedidoEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
         
-        pedidos.remove(itemEncontrado.get());
+        repository.delete(pedidoEncontrado.get());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     
-    @PutMapping("/pedido/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Pedido> update(@PathVariable Long id, @RequestBody Pedido pedido){
         log.info("atualizando pedido " + id);
-        var itemEncontrado = pedidos.stream().filter(i -> i.getId().equals(id)).findFirst();
+        var pedidoEncontrado = repository.findById(id);
         
-        if (itemEncontrado.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (pedidoEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
         
-        pedidos.remove(itemEncontrado.get());
         pedido.setId(id);
-        pedidos.add(pedido);
+        repository.save(pedido);
 
         return ResponseEntity.ok(pedido);
     }
