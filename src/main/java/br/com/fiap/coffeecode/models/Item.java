@@ -29,6 +29,9 @@ public class Item {
     @NotNull
     private boolean ativo = true;
 
+    public Item() {
+    }
+
     public Item(String categoria, String nome, String descricao, BigDecimal preco) {
         this.categoria = categoria;
         this.nome = nome;

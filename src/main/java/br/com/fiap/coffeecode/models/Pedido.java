@@ -27,6 +27,9 @@ public class Pedido {
     @NotNull
     private boolean entregue = false;
 
+    public Pedido() {
+    }
+
     public Pedido(BigDecimal total, LocalDateTime data, int senha, String nome) {
         this.total = total;
         this.data = data;
