@@ -2,33 +2,36 @@ package br.com.fiap.coffeecode.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Pedido {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    // private ArrayList<Item> itens;
+    @NotNull
+    @Min(0)
     private BigDecimal total;
+    @NotNull
     private LocalDateTime data;
+    @NotNull
+    @Min(0)
     private int senha;
     private String nome;
+    @NotNull
     private boolean entregue = false;
-    
-    public Pedido(Long id, ArrayList<Item> itens, BigDecimal total, LocalDateTime data, int senha, String nome,
-            boolean entregue) {
-        this.id = id;
-        // this.itens = itens;
+
+    public Pedido(BigDecimal total, LocalDateTime data, int senha, String nome) {
         this.total = total;
         this.data = data;
         this.senha = senha;
         this.nome = nome;
-        this.entregue = entregue;
     }
 
     public Long getId() {
@@ -38,14 +41,6 @@ public class Pedido {
     public void setId(Long id) {
         this.id = id;
     }
-
-    // public ArrayList<Item> getItens() {
-    //     return itens;
-    // }
-
-    // public void setItens(ArrayList<Item> itens) {
-    //     this.itens = itens;
-    // }
 
     public BigDecimal getTotal() {
         return total;
@@ -89,7 +84,7 @@ public class Pedido {
 
     @Override
     public String toString() {
-        return "Pedido [id=" + id +/* ", itens=" + itens + */ ", total=" + total + ", data=" + data + ", senha=" + senha
+        return "Pedido [id=" + id + ", total=" + total + ", data=" + data + ", senha=" + senha
                 + ", nome=" + nome + ", entregue=" + entregue + "]";
     }
 

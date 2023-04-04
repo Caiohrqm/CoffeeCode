@@ -2,8 +2,10 @@ package br.com.fiap.coffeecode.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.coffeecode.exceptions.RestNotFoundException;
 import br.com.fiap.coffeecode.models.Pedido;
 import br.com.fiap.coffeecode.repository.PedidoRepository;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -23,56 +25,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestController
 @RequestMapping("/pedido")
 public class PedidoController {
-    
+
     Logger log = LoggerFactory.getLogger(Pedido.class);
 
     @Autowired
     PedidoRepository repository;
 
     @GetMapping
-    public List<Pedido> index(){
+    public List<Pedido> index() {
         return repository.findAll();
     }
-    
+
     @PostMapping
-    public ResponseEntity<Pedido> create(@RequestBody Pedido pedido){
+    public ResponseEntity<Pedido> create(@RequestBody @Valid Pedido pedido) {
         log.info("cadastrando pedido " + pedido);
         repository.save(pedido);
         return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pedido> show(@PathVariable Long id){
+    public ResponseEntity<Pedido> show(@PathVariable Long id) {
         log.info("detalhando pedido " + id);
-        var pedidoEncontrado = repository.findById(id);
-        
-        if (pedidoEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-        
-        return ResponseEntity.ok(pedidoEncontrado.get());
+        var pedido = repository.findById(id).orElseThrow(() -> new RestNotFoundException("pedido não encontrado"));
+
+        return ResponseEntity.ok(pedido);
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Pedido> destroy(@PathVariable Long id){
+    public ResponseEntity<Pedido> destroy(@PathVariable Long id) {
         log.info("deletando pedido " + id);
-        var pedidoEncontrado = repository.findById(id);
-        
-        if (pedidoEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-        
-        repository.delete(pedidoEncontrado.get());
+        var pedido = repository.findById(id)
+                .orElseThrow(() -> new RestNotFoundException("erro ao apagar, pedido não encontrado"));
+
+        repository.delete(pedido);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity<Pedido> update(@PathVariable Long id, @RequestBody Pedido pedido){
+    public ResponseEntity<Pedido> update(@PathVariable Long id, @RequestBody Pedido pedido) {
         log.info("atualizando pedido " + id);
-        var pedidoEncontrado = repository.findById(id);
-        
-        if (pedidoEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-        
+        repository.findById(id).orElseThrow(() -> new RestNotFoundException("item não encontrado"));
+
         pedido.setId(id);
         repository.save(pedido);
 

@@ -6,31 +6,34 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Item {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
+    @Size(min = 3, max = 30)
     private String categoria;
+    @NotBlank
+    @Size(min = 3, max = 30)
     private String nome;
+    @Size(max = 255)
     private String descricao;
+    @Min(0)
     private BigDecimal preco;
+    @NotNull
     private boolean ativo = true;
-    private int quantidade;
 
-    public Item(Long id, String categoria, String nome, String descricao, BigDecimal preco, boolean ativo) {
-        this.id = id;
+    public Item(String categoria, String nome, String descricao, BigDecimal preco) {
         this.categoria = categoria;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
-        this.ativo = ativo;
-    }
-
-    public Item(Long id, BigDecimal preco, int quantidade) {
-        this.id = id;
-        this.preco = preco;
-        this.quantidade = quantidade;
     }
 
     public Long getId() {
@@ -79,14 +82,6 @@ public class Item {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
     }
 
     @Override

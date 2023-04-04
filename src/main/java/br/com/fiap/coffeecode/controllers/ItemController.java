@@ -2,8 +2,10 @@ package br.com.fiap.coffeecode.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.coffeecode.exceptions.RestNotFoundException;
 import br.com.fiap.coffeecode.models.Item;
 import br.com.fiap.coffeecode.repository.ItemRepository;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -23,58 +25,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestController
 @RequestMapping("/menu")
 public class ItemController {
-    
+
     Logger log = LoggerFactory.getLogger(Item.class);
 
     @Autowired
     ItemRepository repository;
 
     @GetMapping
-    public List<Item> index(){
+    public List<Item> index() {
         return repository.findAll();
     }
-    
+
     @PostMapping
-    public ResponseEntity<Item> create(@RequestBody Item item){
+    public ResponseEntity<Object> create(@RequestBody @Valid Item item) {
         log.info("cadastrando item " + item);
-        
         repository.save(item);
-        
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Item> show(@PathVariable Long id){
+    public ResponseEntity<Item> show(@PathVariable Long id) {
         log.info("detalhando item " + id);
-        var itemEncontrado = repository.findById(id);
-        
-        if (itemEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-        
-        return ResponseEntity.ok(itemEncontrado.get());
+        var item = repository.findById(id).orElseThrow(() -> new RestNotFoundException("item não encontrado"));
+
+        return ResponseEntity.ok(item);
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Item> destroy(@PathVariable Long id){
+    public ResponseEntity<Item> destroy(@PathVariable Long id) {
         log.info("deletando item " + id);
-        var itemEncontrado = repository.findById(id);
-        
-        if (itemEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-        
-        repository.delete(itemEncontrado.get());
+        var item = repository.findById(id)
+                .orElseThrow(() -> new RestNotFoundException("erro ao apagar, item não encontrado"));
+
+        repository.delete(item);
 
         return ResponseEntity.noContent().build();
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity<Item> update(@PathVariable Long id, @RequestBody Item item){
+    public ResponseEntity<Item> update(@PathVariable Long id, @RequestBody Item item) {
         log.info("atualizando item " + id);
-        var itemEncontrado = repository.findById(id);
-        
-        if (itemEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-        
+        repository.findById(id).orElseThrow(() -> new RestNotFoundException("item não encontrado"));
+
         item.setId(id);
         repository.save(item);
 
