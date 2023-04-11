@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/menu")
 public class ItemController {
 
-    Logger log = LoggerFactory.getLogger(Item.class);
+    Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     ItemRepository repository;
@@ -43,34 +43,30 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Item> show(@PathVariable Long id) {
         log.info("detalhando item " + id);
-        var item = repository.findById(id).orElseThrow(() -> new RestNotFoundException("item não encontrado"));
-
-        return ResponseEntity.ok(item);
+        return ResponseEntity.ok(getItem(id));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Item> destroy(@PathVariable Long id) {
         log.info("deletando item " + id);
-        var item = repository.findById(id)
-                .orElseThrow(() -> new RestNotFoundException("erro ao apagar, item não encontrado"));
-
-        repository.delete(item);
-
+        repository.delete(getItem(id));
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Item> update(@PathVariable Long id, @RequestBody Item item) {
         log.info("atualizando item " + id);
-        repository.findById(id).orElseThrow(() -> new RestNotFoundException("item não encontrado"));
-
+        getItem(id);
         item.setId(id);
         repository.save(item);
-
         return ResponseEntity.ok(item);
+    }
+
+    private Item getItem(Long id) {
+        return repository.findById(id).orElseThrow(() -> new RestNotFoundException("item não encontrado"));
     }
 
 }

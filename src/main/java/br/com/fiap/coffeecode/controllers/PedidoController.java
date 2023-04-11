@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/pedido")
 public class PedidoController {
 
-    Logger log = LoggerFactory.getLogger(Pedido.class);
+    Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     PedidoRepository repository;
@@ -43,34 +43,31 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Pedido> show(@PathVariable Long id) {
         log.info("detalhando pedido " + id);
-        var pedido = repository.findById(id).orElseThrow(() -> new RestNotFoundException("pedido não encontrado"));
-
-        return ResponseEntity.ok(pedido);
+        return ResponseEntity.ok(getPedido(id));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Pedido> destroy(@PathVariable Long id) {
         log.info("deletando pedido " + id);
-        var pedido = repository.findById(id)
-                .orElseThrow(() -> new RestNotFoundException("erro ao apagar, pedido não encontrado"));
-
-        repository.delete(pedido);
-
+        repository.delete(getPedido(id));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Pedido> update(@PathVariable Long id, @RequestBody Pedido pedido) {
         log.info("atualizando pedido " + id);
-        repository.findById(id).orElseThrow(() -> new RestNotFoundException("item não encontrado"));
-
+        getPedido(id);
         pedido.setId(id);
         repository.save(pedido);
-
         return ResponseEntity.ok(pedido);
+    }
+
+    private Pedido getPedido(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RestNotFoundException("pedido não encontrado"));
     }
 
 }
