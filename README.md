@@ -322,12 +322,10 @@ id - código do pedido a ser atualizado
     "itens": [
         {
             "id": 1,
-            "preco": 3.50,
             "quantidade": 1
         },
         {
             "id": 3,
-            "preco": 6.50,
             "quantidade": 1
         }
     ],
