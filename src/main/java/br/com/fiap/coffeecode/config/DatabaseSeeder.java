@@ -21,40 +21,32 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Autowired
     ItemRepository itemRepository;
+
     @Autowired
     PedidoRepository pedidoRepository;
+
     @Autowired
     ItemPedidoRepository itemPedidoRepository;
 
     @Override
     public void run(String... args) throws Exception {
-        itemRepository.saveAll(List.of(
-                new Item(1l, "Bebidas", "Expresso", "Café Preto", new BigDecimal(3.5), true),
-                new Item(2l, "Bebidas", "Cappuccino", "Café com leite e chantilly", new BigDecimal(5), true),
-                new Item(3l, "Salgados", "Coxinha", "Recheada com frango e catupity", new BigDecimal(6.5), true)));
-        pedidoRepository.saveAll(List.of(
-                new Pedido(1l, new BigDecimal(10),
-                        LocalDateTime.parse("2023-03-07 09:52:33", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                        1, "João", true),
-                new Pedido(2l, new BigDecimal(13),
-                        LocalDateTime.parse("2023-03-07 10:08:46", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                        2, "Maria", false)));
+
+        Item i1 = new Item(1l, "Bebidas", "Expresso", "Café Preto", new BigDecimal(3.5), true);
+        Item i2 = new Item(2l, "Bebidas", "Cappuccino", "Café com leite e chantilly", new BigDecimal(5), true);
+        Item i3 = new Item(3l, "Salgados", "Coxinha", "Recheada com frango e catupity", new BigDecimal(6.5), true);
+        itemRepository.saveAll(List.of(i1, i2, i3));
+
+        Pedido p1 = new Pedido(1l, new BigDecimal(10), LocalDateTime.parse("2023-03-07 09:52:33", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), 1, "João", true);
+        Pedido p2 = new Pedido(2l, new BigDecimal(13), LocalDateTime.parse("2023-03-07 10:08:46", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), 2, "Maria", false);
+        pedidoRepository.saveAll(List.of(p1, p2));
+        
+        
         itemPedidoRepository.saveAll(List.of(
-                new ItemPedido(1l,
-                        new Item(1l, "Bebidas", "Expresso", "Café Preto", new BigDecimal(3.5), true),
-                        new Pedido(1l, new BigDecimal(10),
-                                LocalDateTime.parse("2023-03-07 09:52:33",
-                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                                1, "João", true),
-                        1),
-                new ItemPedido(2l,
-                        new Item(3l, "Salgados", "Coxinha", "Recheada com frango e catupity", new BigDecimal(6.5),
-                                true),
-                        new Pedido(1l, new BigDecimal(10),
-                                LocalDateTime.parse("2023-03-07 09:52:33",
-                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                                1, "João", true),
-                        1)));
+                ItemPedido.builder().id(1l).item(new Item(1l, "Bebidas", "Expresso", "Café Preto", new BigDecimal(3.5), true)).pedido(new Pedido(1l, new BigDecimal(10), LocalDateTime.parse("2023-03-07 09:52:33", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), 1, "João", true)).item(i3).pedido(p2).build(),
+                ItemPedido.builder().id(2l).item(new Item(3l, "Salgados", "Coxinha", "Recheada com frango e catupity", new BigDecimal(6.5), true)).pedido(new Pedido(1l, new BigDecimal(10), LocalDateTime.parse("2023-03-07 09:52:33", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), 1, "João", true)).item(i3).pedido(p2).build()
+
+        ));
+
     }
 
 }

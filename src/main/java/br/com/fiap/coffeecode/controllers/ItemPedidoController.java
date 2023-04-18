@@ -1,10 +1,9 @@
 package br.com.fiap.coffeecode.controllers;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+//import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.coffeecode.exceptions.RestNotFoundException;
@@ -23,12 +23,12 @@ import br.com.fiap.coffeecode.repository.ItemRepository;
 import br.com.fiap.coffeecode.repository.PedidoRepository;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/cesta")
+@Slf4j
 public class ItemPedidoController {
-
-    Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     ItemPedidoRepository itemPedidoRepository;
@@ -40,8 +40,9 @@ public class ItemPedidoController {
     PedidoRepository pedidoRepository;
 
     @GetMapping
-    public List<ItemPedido> index() {
-        return itemPedidoRepository.findAll();
+    public Page<ItemPedido> index(@RequestParam(required = false) String busca, Pageable pageable) {
+        if (busca == null) return itemPedidoRepository.findAll(pageable);
+        return itemPedidoRepository.findByDescricaoContaining(busca, pageable);
     }
 
     @PostMapping
