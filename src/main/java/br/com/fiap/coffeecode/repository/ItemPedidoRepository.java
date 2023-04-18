@@ -10,4 +10,4 @@ public interface ItemPedidoRepository extends JpaRepository<ItemPedido, Long> {
 
     Page<ItemPedido> findByDescricaoContaining(String busca, Pageable pageable);
 
-}
+} 
