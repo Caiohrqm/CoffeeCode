@@ -12,9 +12,11 @@ import org.springframework.context.annotation.Configuration;
 import br.com.fiap.coffeecode.models.Item;
 import br.com.fiap.coffeecode.models.ItemPedido;
 import br.com.fiap.coffeecode.models.Pedido;
+import br.com.fiap.coffeecode.models.Usuario;
 import br.com.fiap.coffeecode.repository.ItemPedidoRepository;
 import br.com.fiap.coffeecode.repository.ItemRepository;
 import br.com.fiap.coffeecode.repository.PedidoRepository;
+import br.com.fiap.coffeecode.repository.UsuarioRepository;
 
 @Configuration
 public class DatabaseSeeder implements CommandLineRunner {
@@ -27,6 +29,9 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Autowired
     ItemPedidoRepository itemPedidoRepository;
+
+    @Autowired
+    UsuarioRepository usuarioRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -47,6 +52,14 @@ public class DatabaseSeeder implements CommandLineRunner {
         itemPedidoRepository.saveAll(List.of(
                 ItemPedido.builder().id(1l).item(i1).pedido(p1).quantidade(1).descricao("relação 1").build(),
                 ItemPedido.builder().id(2l).item(i3).pedido(p1).quantidade(1).descricao("relação 2").build()));
+
+
+        usuarioRepository.save(Usuario.builder()
+            .nome("Caio Gabriella")
+            .email("caio&gabi@fiap.com.br")
+            .senha("caiogabriella9393588033")
+            .build()
+        );
     }
 
 }

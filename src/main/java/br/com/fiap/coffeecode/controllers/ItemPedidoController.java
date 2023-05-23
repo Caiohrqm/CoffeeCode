@@ -1,9 +1,13 @@
 package br.com.fiap.coffeecode.controllers;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 //import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +26,19 @@ import br.com.fiap.coffeecode.models.ItemPedido;
 import br.com.fiap.coffeecode.repository.ItemPedidoRepository;
 import br.com.fiap.coffeecode.repository.ItemRepository;
 import br.com.fiap.coffeecode.repository.PedidoRepository;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/cesta")
 @Slf4j
+@SecurityRequirement(name = "bearer-key")
+@Tag(name = "item pedido")
 public class ItemPedidoController {
 
     @Autowired
@@ -40,41 +50,60 @@ public class ItemPedidoController {
     @Autowired
     PedidoRepository pedidoRepository;
 
+    @Autowired
+    PagedResourcesAssembler<Object> assembler;
+
     @GetMapping
-    public Page<ItemPedido> index(@RequestParam(required = false) String busca, @PageableDefault(size = 5) Pageable pageable) {
-        if (busca == null) return itemPedidoRepository.findAll(pageable);
-        return itemPedidoRepository.findByDescricaoContaining(busca, pageable);
+    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String busca, @ParameterObject @PageableDefault(size = 5) Pageable pageable){
+        Page<ItemPedido> itensPedido = (busca == null)?
+            itemPedidoRepository.findAll(pageable):
+            itemPedidoRepository.findByDescricaoContaining(busca, pageable);
+
+            return assembler.toModel(itensPedido.map(ItemPedido::toEntityModel));
+
     }
 
+
     @PostMapping
+    @ApiResponses ({
+        @ApiResponse(responseCode = "201", description = "Item pedido cadastrado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Os campos enviados são inválidos")
+    })
     public ResponseEntity<Object> create(@RequestBody @Valid ItemPedido itemPedido) {
         log.info("cadastrando associação de item e pedido " + itemPedido);
         itemPedidoRepository.save(itemPedido);
         itemPedido.setItem(itemRepository.findById(itemPedido.getItem().getId()).get());
         itemPedido.setPedido(pedidoRepository.findById(itemPedido.getPedido().getId()).get());
-        return ResponseEntity.status(HttpStatus.CREATED).body(itemPedido);
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemPedido.toEntityModel());
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ItemPedido> show(@PathVariable Long id) {
+    @Operation(
+        summary = "Detalhar item pedido",
+        description = "Endpoint que recebe um id e retorna os dados da item pedido. O id deve ser ..."
+
+    )
+    public EntityModel<ItemPedido> show(@PathVariable Long id) {
         log.info("detalhando associação " + id);
-        return ResponseEntity.ok(getItemPedido(id));
+        var itemPedido = getItemPedido(id);
+        return itemPedido.toEntityModel();
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ItemPedido> destroy(@PathVariable Long id) {
         log.info("apagando associação " + id);
-        itemPedidoRepository.delete(getItemPedido(id));
+        var itemPedido = getItemPedido(id);
+        itemPedidoRepository.delete(itemPedido);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ItemPedido> update(@PathVariable Long id, @RequestBody @Valid ItemPedido itemPedido) {
+    public EntityModel<ItemPedido> update(@PathVariable Long id, @RequestBody @Valid ItemPedido itemPedido) {
         log.info("atualizando associação " + id);
         getItemPedido(id);
         itemPedido.setId(id);
         itemPedidoRepository.save(itemPedido);
-        return ResponseEntity.ok(itemPedido);
+        return itemPedido.toEntityModel();
     }
 
     private ItemPedido getItemPedido(Long id) {
