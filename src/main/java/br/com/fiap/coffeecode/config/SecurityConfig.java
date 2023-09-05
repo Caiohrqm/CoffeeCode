@@ -3,6 +3,7 @@ package br.com.fiap.coffeecode.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -14,36 +15,45 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-public class SecurityConfig{
+public class SecurityConfig {
 
     @Autowired
     AuthorizationFilter authorizationFilter;
+    @Autowired
+    Environment env;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
                 .authorizeHttpRequests()
-                    .requestMatchers(HttpMethod.POST, "/api/registrar").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
-                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                    .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/registrar").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                // .anyRequest().authenticated()
                 .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        if (env.getActiveProfiles().length > 0 && env.getActiveProfiles()[0].equals("open")) {
+            http.authorizeHttpRequests().anyRequest().permitAll();
+        } else {
+            http.authorizeHttpRequests().anyRequest().authenticated();
+        }
+
+        return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
 }
